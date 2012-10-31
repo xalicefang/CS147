@@ -1,41 +1,60 @@
-<!DOCTYPE html>
 <html>
-	<head>
-		<title>Maya Online Books</title>
-		<link rel="apple-touch-icon" href="appicon.png" />
-		<link rel="apple-touch-startup-image" href="startup.png">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<meta name="viewport" content="width=device-width, user-scalable=no" />
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-		<link href="style.css" rel="stylesheet" type="text/css">
-	</head>
+<head>
+</head>
+<body>
+<div id="fb-root"></div>
+<script>
+  // Additional JS functions here
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '120298761459669', // App ID
+      channelUrl : '//http://stanford.edu/~kduvvuru/cgi-bin/prototype/channel.html', // Channel File
+      status     : true, // check login status
+      cookie     : true, // enable cookies to allow the server to access the session
+      xfbml      : true  // parse XFBML
+    });
 
-	<body>
-	
-		<div class="banner"></div>
-		
-		<table>
-		<?php
-		include("config.php");
-		$query = "select * from books";
+    // Additional init code here
+	FB.getLoginStatus(function(response) {
+	  if (response.status === 'connected') {
+		// connected
+	  } else if (response.status === 'not_authorized') {
+		// not_authorized
+		login();
+	  } else {
+		// not_logged_in
+		login();
+	  }
+	 });
 
-		// Don’t be intimidated by the following lines. You can pretty much
-		// always copy and paste these because they’re sort of like
-		// functional bits that never change.
-		$result = mysql_query($query);
-		while ($row = mysql_fetch_assoc($result)) {
-			echo "<p>".$row["title"]." by ".$row["author"]."</p>";
-			echo "<img src='".$row["image"]."' />";
-		}
-		?>
-		</table>
-		
-		<script type="text/javascript">
-		$("a").click(function (event) {
-		    event.preventDefault();
-		    window.location = $(this).attr("href");
-		});
-		</script>
-	</body>
+  };
+
+function login() {
+    FB.login(function(response) {
+        if (response.authResponse) {
+            // connected
+		testAPI();
+        } else {
+            // cancelled
+        }
+    });
+}
+
+function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+        console.log('Good to see you, ' + response.name + '.');
+    });
+}
+
+  // Load the SDK Asynchronously
+  (function(d){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     ref.parentNode.insertBefore(js, ref);
+   }(document));
+</script>
+</body>
 </html>
